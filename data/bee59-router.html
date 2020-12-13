@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>原生模拟</title>
+    <style type="text/css">
+        .router_box,
+        #router-view {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        .router_box>a {
+            padding: 0 10px;
+            color: #47a6b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="router_box">
+        <a href="/home" class="router">GitHub</a>
+        <a href="/news" class="router">TheBee</a>
+        <a href="/team" class="router">团队</a>
+        <a href="/about" class="router">关于</a>
+    </div>
+    <div id="router-view"></div>
+    <script type="text/javascript">
+        function Vue(parameters) {
+            let vue = {};
+            vue.routes = parameters.routes || [];
+            vue.init = function() {
+                document.querySelectorAll(".router").forEach((item, index) => {
+                    item.addEventListener("click", function(e) {
+                        let event = e || window.event;
+                        event.preventDefault();
+                        window.location.hash = this.getAttribute("href");
+                    }, false);
+                });
+                window.addEventListener("hashchange", () => {
+                    vue.routerChange();
+                });
+                vue.routerChange();
+            };
+            vue.routerChange = () => {
+                let nowHash = window.location.hash;
+                let index = vue.routes.findIndex((item, index) => {
+                    return nowHash == ('#' + item.path);
+                });
+                if (index >= 0) {
+                    document.querySelector("#router-view").innerHTML = vue.routes[index].component;
+                } else {
+                    let defaultIndex = vue.routes.findIndex((item, index) => {
+                        return item.path == '*';
+                    });
+                    if (defaultIndex >= 0) {
+                        window.location.hash = vue.routes[defaultIndex].redirect;
+                    }
+                }
+            };
+            vue.init();
+        }
+        new Vue({
+            routes: [{
+                path: '/home',
+                component: "<h1>GitHub</h1><a href='https://github.com/devil-trigger'>https://github.com/devil-trigger</a>"
+            }, {
+                path: '/news',
+                component: "<h1>TheBee</h1><a href='http://thebee.fun'>thebee.fun</a>"
+            }, {
+                path: '/team',
+                component: '<h1>团队</h1><h4>全栈修炼</h4>'
+            }, {
+                path: '/about',
+                component: '<h1>关于</h1><h4>!!!!!!!!!</h4><p>关于关于！！</p>'
+            }, {
+                path: '*',
+                redirect: '/home'
+            }]
+        });
+    </script>

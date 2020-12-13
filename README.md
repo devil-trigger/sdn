@@ -1,4 +1,4 @@
-# 知识我的公共资源请求库
+# 这是我的公共资源请求库
 Blog in sdn   (img、data、css、movie.....)
 
 
